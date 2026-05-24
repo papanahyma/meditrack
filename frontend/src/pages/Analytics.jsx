@@ -270,8 +270,7 @@ const Analytics = () => {
           // At the bottom of Analytics.jsx, before the closing </div>
           <div style={{ textAlign: 'right', marginTop: 24 }}>
             
-              <a href={`http://localhost:5001/api/medications/export-pdf?userId=${user._id}`}
-              target="_blank"
+            <a href={`${API_URL}/api/medications/export-pdf?userId=${user._id}`}              target="_blank"
               rel="noreferrer"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,

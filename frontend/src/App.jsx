@@ -83,9 +83,11 @@ const App = () => {
         const alreadySaved = sessionStorage.getItem('pushSaved')
         if (alreadySaved) return
 
-        await axios.post(
-          'http://localhost:5001/api/push/subscribe',
-          { userId: user._id, subscription },
+const API_URL = import.meta.env.VITE_API_URL; // add at top of file after imports
+
+      await axios.post(
+        `${API_URL}/api/push/subscribe`,
+        { userId: user._id, subscription },
           { headers: { Authorization: `Bearer ${token}` } }
         )
 

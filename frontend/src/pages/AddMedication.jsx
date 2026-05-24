@@ -7,6 +7,8 @@ import axios from 'axios'
 import { Plus, Clock, Pill, FileText, Package, Calendar, Image, Repeat, AlertCircle } from 'lucide-react'
 import debounce from "lodash.debounce";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const SCHEDULE_TYPES = [
   { value: 'once', label: 'Single time daily', desc: 'e.g. 8:00 AM once a day' },
   { value: 'multiple', label: 'Multiple times daily', desc: 'e.g. 8 AM, 2 PM, 8 PM' },
@@ -93,7 +95,7 @@ const AddMedication = () => {
     data.append('image', file)
     try {
       setUploading(true)
-      const res = await axios.post('http://localhost:5001/api/upload/prescription', data, {
+      const res = await axios.post(`${API_URL}/api/upload/prescription`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setFormData(prev => ({ ...prev, prescriptionImage: res.data.imageUrl }))
@@ -113,7 +115,7 @@ const scanPrescription = async () => {
     setOcrLoading(true)
 
     const res = await axios.post(
-      "http://localhost:5001/api/ocr/scan",
+      `${API_URL}/api/ocr/scan`,
       {
         imageUrl: formData.prescriptionImage,
       }
@@ -266,7 +268,7 @@ const scanPrescription = async () => {
       }
 
       const res = await axios.get(
-        `http://localhost:5001/api/drugs/search?query=${value}`
+        `${API_URL}/api/drugs/search?query=${value}`
       )
 
       setSuggestions(res.data)
@@ -717,7 +719,7 @@ const scanPrescription = async () => {
             />
             {uploading && <p style={{ fontSize: 13, color: '#0d9488', marginTop: 6 }}>⏳ Uploading...</p>}
             {formData.prescriptionImage && (
-              <img src={`http://localhost:5001${formData.prescriptionImage}`}
+              <img src={`${API_URL}${formData.prescriptionImage}`}
                 alt="Prescription"
                 style={{ width: 180, marginTop: 10, borderRadius: 8, border: '1px solid #e5e7eb' }}
               />
