@@ -35,14 +35,16 @@ webpush.setVapidDetails(
 
 
 // CORS
+
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
-    process.env.FRONTEND_URL
-].filter(Boolean);
+    'https://meditrack-ruddy.vercel.app' // your live Vercel URL
+];
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin like Postman
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
