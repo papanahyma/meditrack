@@ -1,6 +1,3 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
 import User from "../models/User.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
@@ -133,7 +130,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'All fields required' })
     }
 
-    const user = await User.findOne({ email, isVerified: true })
+const user = await User.findOne({ email, isVerified: { $ne: false } })
     if (!user) return res.status(400).json({ message: 'User not found' })
 
     const isMatch = await bcrypt.compare(password, user.password)
@@ -186,7 +183,7 @@ export const updateProfile = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body
-    const user = await User.findOne({ email })
+const user = await User.findOne({ email, isVerified: { $ne: false } })
     if (!user) return res.status(404).json({ message: 'No account with that email' })
 
     const token = crypto.randomBytes(32).toString('hex')
@@ -194,7 +191,7 @@ export const forgotPassword = async (req, res) => {
     user.resetTokenExpires = Date.now() + 15 * 60 * 1000
     await user.save()
 
-    const resetLink = `http://localhost:5174/reset-password/${token}`
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`
 
     await transporter.sendMail({
       from: `"MediTrack" <${process.env.EMAIL_USER}>`,
@@ -247,7 +244,7 @@ export const resetPassword = async (req, res) => {
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body
-    const user = await User.findOne({ email })
+const user = await User.findOne({ email, isVerified: { $ne: false } })
     if (!user) return res.status(404).json({ message: 'User not found' })
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString()
