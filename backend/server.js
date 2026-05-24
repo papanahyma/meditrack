@@ -39,14 +39,15 @@ webpush.setVapidDetails(
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
-    'https://meditrack-ruddy.vercel.app' // your live Vercel URL
+    'https://meditrack-ruddy.vercel.app'
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin like Postman
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) {
+        
+        // Allow your main domain + any Vercel preview deployment
+        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
             return callback(null, true);
         } else {
             console.log('Blocked by CORS:', origin);
@@ -95,6 +96,8 @@ app.post('/api/save-subscription', async (req, res) => {
 })
 
 const PORT = process.env.PORT || 5001
+
+
 
 connectDB()
   .then(() => {
