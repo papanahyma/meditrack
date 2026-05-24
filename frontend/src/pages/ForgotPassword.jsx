@@ -13,7 +13,7 @@ const ForgotPassword = () => {
     e.preventDefault()
     setLoading(true)
     try {
-      await API.post('/auth/forgot-password', { email })
+      await API.post('/api/auth/forgot-password', { email })
       setSent(true)
       toast.success('Reset link sent! Check your email.')
     } catch (err) {

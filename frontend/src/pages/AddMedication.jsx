@@ -317,7 +317,7 @@ const scanPrescription = async () => {
         sideEffects,
       }
 
-      await API.post('/medications/add', medicationData)
+      await API.post('/api/medications/add', medicationData)
       toast.success('Medication added successfully! 💊')
 
       setTimeout(() => navigate('/medications'), 1200)

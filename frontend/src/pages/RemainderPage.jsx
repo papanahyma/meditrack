@@ -68,7 +68,7 @@ const RemainderPage = () => {
     }
     try {
       const user = JSON.parse(localStorage.getItem('user'))
-      await API.post('/medications/remind', {
+      await API.post('/api/medications/remind', {
         medicineName: med.medicineName,
         dosage: med.dosage,
         form: med.form,

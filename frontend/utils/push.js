@@ -46,7 +46,7 @@ export const enableNotifications = async (userId) => {
       })
     }
 
-    await API.post('/push/subscribe', { userId, subscription })
+    await API.post('/api/push/subscribe', { userId, subscription })
 
     // Update session flag
     sessionStorage.setItem('pushSaved', 'true')

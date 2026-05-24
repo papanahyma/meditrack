@@ -25,7 +25,7 @@ const Register = () => {
     setOtpLoading(true)
     try {
       // Use a separate endpoint to send registration OTP (email must not exist yet)
-      await API.post('/auth/send-register-otp', { email: form.email })
+      await API.post('/api/auth/send-register-otp', { email: form.email })
       toast.success('OTP sent to your email!')
       setStep(2)
     } catch (err) {
@@ -40,7 +40,7 @@ const Register = () => {
     e.preventDefault()
     setLoading(true)
     try {
-      const res = await API.post('/auth/register', { ...form, otp })
+      const res = await API.post('/api/auth/register', { ...form, otp })
       localStorage.setItem('user', JSON.stringify(res.data))
       localStorage.setItem('token', res.data.token)
       toast.success('Account created successfully!')
