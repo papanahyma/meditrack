@@ -16,7 +16,7 @@ export const enableNotifications = async (userId) => {
       applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
     })
 
-    await API.post('/api/push/subscribe', {
+    await API.post('/push/subscribe', {
       userId,
       subscription
     })

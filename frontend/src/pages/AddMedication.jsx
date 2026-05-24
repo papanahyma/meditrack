@@ -95,7 +95,7 @@ const AddMedication = () => {
     data.append('image', file)
     try {
       setUploading(true)
-      const res = await axios.post(`${API_URL}/api/upload/prescription`, data, {
+      const res = await axios.post(`${API_URL}/upload/prescription`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setFormData(prev => ({ ...prev, prescriptionImage: res.data.imageUrl }))
@@ -115,7 +115,7 @@ const scanPrescription = async () => {
     setOcrLoading(true)
 
     const res = await axios.post(
-      `${API_URL}/api/ocr/scan`,
+      `${API_URL}/ocr/scan`,
       {
         imageUrl: formData.prescriptionImage,
       }
@@ -268,7 +268,7 @@ const scanPrescription = async () => {
       }
 
       const res = await axios.get(
-        `${API_URL}/api/drugs/search?query=${value}`
+        `${API_URL}/drugs/search?query=${value}`
       )
 
       setSuggestions(res.data)
@@ -317,7 +317,7 @@ const scanPrescription = async () => {
         sideEffects,
       }
 
-      await API.post('/api/medications/add', medicationData)
+      await API.post('/medications/add', medicationData)
       toast.success('Medication added successfully! 💊')
 
       setTimeout(() => navigate('/medications'), 1200)

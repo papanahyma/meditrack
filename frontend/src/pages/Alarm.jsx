@@ -45,7 +45,7 @@ const Alarm = () => {
     setLoading(`snooze-${minutes}`)
     try {
       if (medId) {
-        await API.post('/api/alarm/snooze', { medId, minutes })
+        await API.post('/alarm/snooze', { medId, minutes })
       }
     } catch (err) {
       console.log('Snooze error:', err.message)
@@ -61,7 +61,7 @@ const Alarm = () => {
     setLoading('taken')
     try {
       if (medId) {
-        await API.post('/api/alarm/status', { medId, status: 'Taken' })
+        await API.post('/alarm/status', { medId, status: 'Taken' })
       }
     } catch (err) {
       console.log('Taken error:', err.message)
@@ -78,7 +78,7 @@ const Alarm = () => {
     setLoading('skipped')
     try {
       if (medId) {
-        await API.post('/api/alarm/status', { medId, status: 'Missed' })
+        await API.post('/alarm/status', { medId, status: 'Missed' })
       }
     } catch (err) {
       console.log('Skip error:', err.message)

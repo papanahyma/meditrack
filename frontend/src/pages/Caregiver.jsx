@@ -69,7 +69,7 @@ const Caregiver = () => {
       const adherence = medications.length > 0
         ? Math.round((taken / medications.length) * 100) : 0
 
-      await API.post('/api/medications/remind', {
+      await API.post('/medications/remind', {
         medicineName: 'Caregiver Report',
         dosage: `Taken: ${taken} | Missed: ${missed} | Pending: ${pending} | Adherence: ${adherence}%`,
         form: 'Report',

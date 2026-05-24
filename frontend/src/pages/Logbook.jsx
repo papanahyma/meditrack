@@ -307,7 +307,7 @@ const Logbook = () => {
 
         {/* Export PDF button */}
         <div style={{ marginTop: 20, textAlign: 'right' }}>
-          <a href={`${API_URL}/api/medications/export-pdf?userId=${user._id}`}
+          <a href={`${API_URL}/medications/export-pdf?userId=${user._id}`}
             target="_blank" rel="noreferrer"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
