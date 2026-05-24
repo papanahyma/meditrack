@@ -1,0 +1,103 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
+import express from 'express'
+import connectDB from './config/db.js'
+import authRoutes from './routes/authRoutes.js'
+import medicationRoutes from './routes/medicationRoutes.js'
+import startReminderJob from './jobs/reminderJob.js'
+import pushRoutes from './routes/pushRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
+import cron from 'node-cron';
+import webpush from 'web-push'
+import Medication from './models/Medication.js'
+import User from './models/User.js'
+import sendEmail from './services/emailService.js' // MODIFIED: Added this import
+import alarmRoutes from './routes/alarmRoutes.js'
+import path from 'path'
+import doseLogRoutes from "./routes/doseLogRoutes.js";
+import { startReminderScheduler } from "./services/reminderScheduler.js";
+import drugRoutes from "./routes/drugRoutes.js";
+import ocrRoutes from "./routes/ocrRoutes.js"
+import uploadRoutes from "./routes/uploadRoutes.js";
+import medicineAIRoutes from "./routes/medicineAIRoutes.js"
+
+const app = express()
+
+console.log("🔥 SERVER.JS IS RUNNING")
+
+webpush.setVapidDetails(
+  'mailto:leylahpapana@gmail.com', // MODIFIED: Use real email
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+)
+
+// MODIFIED: Deleted duplicate webpush.setVapidDetails
+
+// CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  if (req.method === 'OPTIONS') return res.sendStatus(200)
+  next()
+})
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+
+// Routes
+app.use('/api/auth', authRoutes)
+app.use('/api/medications', medicationRoutes)
+app.use('/api/push', pushRoutes)
+app.use('/api/admin', adminRoutes)
+app.use('/api/alarm', alarmRoutes)
+app.use('/uploads', express.static('uploads'))
+app.use("/api/dose", doseLogRoutes);
+app.use("/api/drugs", drugRoutes);
+app.use("/api/ocr", ocrRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/medicine-ai", medicineAIRoutes)
+
+app.use("/uploads", express.static("uploads"));
+
+app.get('/', (req, res) => {
+  res.send('MediTrack Backend Running')
+})
+
+app.get('/api/vapid-public-key', (req, res) => {
+  res.send(process.env.VAPID_PUBLIC_KEY)
+})
+
+app.post('/api/save-subscription', async (req, res) => {
+  await User.updateOne(
+    { _id: req.user._id }, // use your auth middleware to get user
+    { $set: { pushSubscription: req.body.subscription } }
+  )
+  res.json({ success: true })
+})
+
+const PORT = process.env.PORT || 5001
+
+connectDB()
+  .then(() => {
+    console.log('MongoDB Connected')
+    startReminderJob() // MODIFIED: Kept this since you had it
+    console.log("ROUTES LOADED: /api/push, /api/auth, /api/medications, /api/admin, /api/medicine-ai")
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`)
+
+      startReminderScheduler();
+    })
+  })
+  .catch((err) => {
+    console.error('DB connection failed:', err.message)
+    process.exit(1)
+  })
+
+console.log("EMAIL_USER =", process.env.EMAIL_USER)
+console.log("EMAIL_PASS =", process.env.EMAIL_PASS ? "OK" : "MISSING")
+
+console.log('VAPID loaded:', !!process.env.VAPID_PUBLIC_KEY)
