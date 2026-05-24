@@ -4,6 +4,8 @@ import Navbar from '../components/NavBar'
 import API from '../services/api'
 import { ChevronLeft, ChevronRight, CheckCircle, XCircle, Clock, Pill } from 'lucide-react'
 
+   const API_URL = import.meta.env.VITE_API_URL;
+
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 

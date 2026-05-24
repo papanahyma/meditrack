@@ -10,6 +10,8 @@ import API from '../services/api';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const COLORS = {
   Taken: '#10b981',
   Missed: '#f43f5e',
