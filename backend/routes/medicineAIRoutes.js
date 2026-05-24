@@ -7,6 +7,9 @@ const router = express.Router()
 
 router.post("/analyze", async (req, res) => {
 
+    console.log("🔥 HIT /analyze endpoint");
+    console.log("Request body:", req.body);
+
   try {
 
     const { medicineName, userId } = req.body
