@@ -2,45 +2,26 @@ import User from "../models/User.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import crypto from 'crypto'
-import nodemailer from 'nodemailer'
+import { sendEmail } from "../services/emailService.js" // Use n8n now
 
 // TOKEN GENERATOR
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" })
 }
 
-// Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  }
-})
-
-transporter.verify((err) => {
-  if (err) console.log('VERIFY ERROR:', err)
-  else console.log('✅ Email server ready')
-})
-
-// ─── SEND REGISTER OTP (new — email must NOT exist yet) ────────
+// ─── SEND REGISTER OTP ────────
 export const sendRegisterOtp = async (req, res) => {
   try {
     const { email } = req.body
     if (!email) return res.status(400).json({ message: 'Email required' })
 
-    // Block if a verified account already exists
     const exists = await User.findOne({ email, isVerified: true })
     if (exists) return res.status(400).json({ message: 'An account with this email already exists' })
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString()
 
-    // Remove any old pending entry for this email
     await User.deleteOne({ email, isVerified: false })
 
-    // Store a placeholder so OTP survives until verify step
     await User.create({
       name: '__pending__',
       email,
@@ -50,8 +31,7 @@ export const sendRegisterOtp = async (req, res) => {
       isVerified: false,
     })
 
-    await transporter.sendMail({
-      from: `"MediTrack" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
       to: email,
       subject: 'Verify your MediTrack account',
       html: `
@@ -66,11 +46,12 @@ export const sendRegisterOtp = async (req, res) => {
 
     res.json({ message: 'OTP sent to your email' })
   } catch (err) {
+    console.error('Send OTP error:', err)
     res.status(500).json({ message: err.message })
   }
 }
 
-// ─── REGISTER USER (updated — verifies OTP before creating) ───
+// ─── REGISTER USER ───
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone, otp } = req.body
@@ -79,7 +60,6 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'All fields and OTP are required' })
     }
 
-    // Find the pending placeholder matching the OTP
     const pending = await User.findOne({
       email,
       otpCode: otp,
@@ -91,10 +71,8 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired OTP' })
     }
 
-    // Clean up placeholder
     await User.deleteOne({ _id: pending._id })
 
-    // Double-check no real account slipped in
     const alreadyExists = await User.findOne({ email, isVerified: true })
     if (alreadyExists) return res.status(400).json({ message: 'User already exists' })
 
@@ -131,7 +109,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'All fields required' })
     }
 
-const user = await User.findOne({ email, isVerified: { $ne: false } })
+    const user = await User.findOne({ email, isVerified: { $ne: false } })
     if (!user) return res.status(400).json({ message: 'User not found' })
 
     const isMatch = await bcrypt.compare(password, user.password)
@@ -150,7 +128,7 @@ const user = await User.findOne({ email, isVerified: { $ne: false } })
   }
 }
 
-// ─── UPDATE PROFILE (protected) ───────────────────────────────
+// ─── UPDATE PROFILE ───────────────────────────────
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id
@@ -184,7 +162,7 @@ export const updateProfile = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body
-const user = await User.findOne({ email, isVerified: { $ne: false } })
+    const user = await User.findOne({ email, isVerified: { $ne: false } })
     if (!user) return res.status(404).json({ message: 'No account with that email' })
 
     const token = crypto.randomBytes(32).toString('hex')
@@ -194,8 +172,7 @@ const user = await User.findOne({ email, isVerified: { $ne: false } })
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`
 
-    await transporter.sendMail({
-      from: `"MediTrack" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
       to: email,
       subject: 'Reset your MediTrack password',
       html: `
@@ -245,7 +222,7 @@ export const resetPassword = async (req, res) => {
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body
-const user = await User.findOne({ email, isVerified: { $ne: false } })
+    const user = await User.findOne({ email, isVerified: { $ne: false } })
     if (!user) return res.status(404).json({ message: 'User not found' })
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString()
@@ -253,8 +230,7 @@ const user = await User.findOne({ email, isVerified: { $ne: false } })
     user.otpExpires = Date.now() + 5 * 60 * 1000
     await user.save()
 
-    await transporter.sendMail({
-      from: `"MediTrack" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
       to: email,
       subject: 'Your MediTrack Login Code',
       html: `

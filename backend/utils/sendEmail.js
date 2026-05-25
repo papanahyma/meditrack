@@ -1,30 +1,27 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
-import nodemailer from 'nodemailer'
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-})
+import axios from 'axios'
 
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
-    await transporter.sendMail({
-      from: `"MediTrack" <${process.env.EMAIL_USER}>`,
+    if (!process.env.N8N_EMAIL_WEBHOOK_URL) {
+      console.error('❌ N8N_EMAIL_WEBHOOK_URL missing in Render env')
+      return false
+    }
+
+    const payload = {
       to,
       subject,
-      text,
-      html,
+      text: text || '',
+      html: html || text || ''
+    }
+
+    await axios.post(process.env.N8N_EMAIL_WEBHOOK_URL, payload, { 
+      timeout: 10000 
     })
 
-    console.log('📧 Email sent to:', to)
+    console.log(`📧 Email sent via n8n to ${to}`)
     return true
   } catch (err) {
-    console.error('❌ Email error:', err.message)
+    console.error('❌ n8n email error:', err.response?.data || err.message)
     return false
   }
 }
