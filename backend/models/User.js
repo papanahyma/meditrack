@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     role: { type: String, default: 'user' },
     isAdmin: { type: Boolean, default: false }, // ADD THIS LINE
-    isVerified: { type: Boolean, default: true },
+    isVerified: { type: Boolean, default: false },
     
     name: { type: String, required: true },
 

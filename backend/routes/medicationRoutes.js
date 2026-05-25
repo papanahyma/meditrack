@@ -1,5 +1,6 @@
 import express from 'express'
 import Medication from '../models/Medication.js'
+import User from '../models/User.js'
 import upload from '../middleware/uploadMiddleware.js'
 
 import {
@@ -56,7 +57,8 @@ router.post('/upload-prescription/:id', upload.single('prescription'), async (re
 router.get('/user/:id', async (req, res) => {
   try {
     const medications = await Medication.find({ userId: req.params.id }).sort({ createdAt: -1 })
-    res.json({ medications })
+    const user = await User.findById(req.params.id).select('-password')
+    res.json({ medications, user })
   } catch (err) {
     res.status(500).json({ message: err.message })
   }

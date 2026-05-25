@@ -65,17 +65,17 @@ app.use(express.urlencoded({ extended: true }))
 
 
 // Routes
-app.use('/api/auth', authRoutes)
-app.use('/api/medications', medicationRoutes)
-app.use('/api/push', pushRoutes)
-app.use('/api/admin', adminRoutes)
-app.use('/api/alarm', alarmRoutes)
+app.use('/auth', authRoutes)
+app.use('/medications', medicationRoutes)
+app.use('/push', pushRoutes)
+app.use('/admin', adminRoutes)
+app.use('/alarm', alarmRoutes)
 app.use('/uploads', express.static('uploads'))
-app.use("/api/dose", doseLogRoutes);
-app.use("/api/drugs", drugRoutes);
-app.use("/api/ocr", ocrRoutes);
-app.use("/api/upload", uploadRoutes);
-app.use("/api/medicine-ai", medicineAIRoutes)
+app.use("/dose", doseLogRoutes);
+app.use("/drugs", drugRoutes);
+app.use("/ocr", ocrRoutes);
+app.use("/upload", uploadRoutes);
+app.use("/medicine-ai", medicineAIRoutes)
 
 app.use("/uploads", express.static("uploads"));
 
@@ -83,11 +83,11 @@ app.get('/', (req, res) => {
   res.send('MediTrack Backend Running')
 })
 
-app.get('/api/vapid-public-key', (req, res) => {
+app.get('/vapid-public-key', (req, res) => {
   res.send(process.env.VAPID_PUBLIC_KEY)
 })
 
-app.post('/api/save-subscription', async (req, res) => {
+app.post('/save-subscription', async (req, res) => {
   await User.updateOne(
     { _id: req.user._id }, // use your auth middleware to get user
     { $set: { pushSubscription: req.body.subscription } }
