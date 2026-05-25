@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import DoseLog from "../models/DoseLog.js";
-import sendEmail from "./emailService.js";
+import { sendEmail } from "../utils/sendEmail.js"
 
 export const startReminderScheduler = () => {
   cron.schedule("* * * * *", async () => {
