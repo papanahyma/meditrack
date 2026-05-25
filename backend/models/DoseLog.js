@@ -34,6 +34,17 @@ const doseLogSchema = new mongoose.Schema(
       type: String,
       required: true, // YYYY-MM-DD
     },
+
+    // NEW: Track notifications
+    emailSent: {
+      type: Boolean,
+      default: false,
+    },
+    
+    alertSent: {
+      type: Boolean,
+      default: false, // for SMS/push/alarm at exact time
+    },
   },
   {
     timestamps: true,
