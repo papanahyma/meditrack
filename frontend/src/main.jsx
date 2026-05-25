@@ -24,7 +24,7 @@ navigator.serviceWorker.addEventListener('message', async (event) => {
   if (event.data?.type === 'START_ALARM') {
 
     // Start sound
-    const module = await import('../utils/alarm.js')
+    const module = await import('../../utils/alarm.js')
     module.startAlarm()
 
     // Save current medicine ID if needed

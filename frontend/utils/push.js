@@ -1,7 +1,7 @@
 // frontend/src/utils/push.js
 // Used by Profile.jsx "Enable Push Notifications" button
 
-import API from '../src/services/api'
+import API from '../src/services/api.js'
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4)

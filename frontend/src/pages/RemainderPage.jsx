@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import { Bell, Mail, Clock } from 'lucide-react'
 import Navbar from '../components/NavBar'
 import API from '../services/api'
-import { enableNotifications } from '../components/EnableNotifications'
+import { enableNotifications } from '../../utils/push'
 
 const RemainderPage = () => {
   const [medications, setMedications] = useState([])

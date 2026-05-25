@@ -425,13 +425,20 @@ useEffect(() => {
           </div>
         </div>
 
-      </div>
+        {/* Streak Card */}
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 16,
+          border: '1px solid var(--border)',
+          padding: '24px', marginTop: 28,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          textAlign: 'center',
+        }}>
+          <h6 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 8 }}>🔥 Streak</h6>
+          <h2 style={{ fontSize: 32, fontWeight: 800, color: '#F59E0B', marginBottom: 6 }}>{streak}</h2>
+          <small style={{ fontSize: 13, color: 'var(--text-secondary)' }}>days in a row</small>
+        </div>
 
-            <div className="card text-center p-3 shadow-sm">
-              <h6>🔥 Streak</h6>
-              <h2>{streak}</h2>
-              <small>days in a row</small>
-            </div>
+      </div>
 
     </div>
   )

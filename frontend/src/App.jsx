@@ -24,8 +24,6 @@ import Alarm from './pages/Alarm'
 import Logbook from './pages/Logbook'
 
 
-   const API_URL = import.meta.env.VITE_API_URL;
-
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4)
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
@@ -86,10 +84,8 @@ const App = () => {
         const alreadySaved = sessionStorage.getItem('pushSaved')
         if (alreadySaved) return
 
-const API_URL = import.meta.env.VITE_API_URL; // add at top of file after imports
-
       await axios.post(
-        `${API_URL}/push/subscribe`,
+        `${import.meta.env.VITE_API_URL}/push/subscribe`,
         { userId: user._id, subscription },
           { headers: { Authorization: `Bearer ${token}` } }
         )
