@@ -2,7 +2,7 @@ import User from "../models/User.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import crypto from 'crypto'
-import { sendEmail } from "../services/emailService.js" // Use n8n now
+import { sendEmail } from "../utils/sendEmail.js"
 
 // TOKEN GENERATOR
 const generateToken = (id) => {
