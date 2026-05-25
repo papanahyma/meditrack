@@ -103,7 +103,7 @@ connectDB()
   .then(() => {
     console.log('MongoDB Connected')
     startReminderJob() // MODIFIED: Kept this since you had it
-    console.log("ROUTES LOADED: /api/push, /api/auth, /api/medications, /api/admin, /api/medicine-ai")
+    console.log("ROUTES LOADED: /api/push, /api/auth, /api/medications, /api/admin, /api/medicine-ai, /api/dose, /api/drugs, /api/ocr, /api/upload, /api/alarm")
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`)
 
