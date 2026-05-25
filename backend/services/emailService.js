@@ -1,25 +1,28 @@
-import createTransporter from '../utils/emailConfig.js'
-
-const transporter = createTransporter()
+import axios from 'axios'
 
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      throw new Error('Missing EMAIL credentials in .env')
+    if (!process.env.N8N_EMAIL_WEBHOOK_URL) {
+      console.error('❌ N8N_EMAIL_WEBHOOK_URL missing in Render env')
+      return false
     }
 
-    await transporter.sendMail({
-      from: `"MediTrack" <${process.env.EMAIL_USER}>`,
+    const payload = {
       to,
       subject,
-      text,
-      html,
+      text: text || '',
+      html: html || text || ''
+      // Remove 'from' - n8n Gmail node sets this
+    }
+
+    await axios.post(process.env.N8N_EMAIL_WEBHOOK_URL, payload, { 
+      timeout: 10000 
     })
 
-    console.log(`📧 Email sent to ${to}`)
+    console.log(`📧 Email sent via n8n to ${to}`)
     return true
   } catch (err) {
-    console.error('❌ Email error:', err.message)
+    console.error('❌ n8n email error:', err.response?.data || err.message)
     return false
   }
 }
