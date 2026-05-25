@@ -1,6 +1,6 @@
 import Medication from '../models/Medication.js'
 import User from '../models/User.js'
-import sendEmail from '../services/emailService.js'
+import { sendEmail } from "../utils/sendEmail.js"
 import { updateDailyStreak } from '../services/streakService.js'
 import { generateInsights } from '../services/aiInsights.js'
 import PDFDocument from 'pdfkit'
