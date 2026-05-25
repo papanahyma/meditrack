@@ -2,7 +2,7 @@ import cron from 'node-cron'
 import webpush from 'web-push'
 import Medication from '../models/Medication.js'
 import User from '../models/User.js'
-import { sendEmail } from '../services/emailService.js'
+import { sendEmail } from "../utils/sendEmail.js"
 
 webpush.setVapidDetails(
   'mailto:' + process.env.EMAIL_USER,

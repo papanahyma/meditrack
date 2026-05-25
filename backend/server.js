@@ -13,7 +13,7 @@ import cron from 'node-cron';
 import webpush from 'web-push'
 import Medication from './models/Medication.js'
 import User from './models/User.js'
-import sendEmail from './services/emailService.js' // MODIFIED: Added this import
+import { sendEmail } from "../utils/sendEmail.js"// MODIFIED: Added this import
 import alarmRoutes from './routes/alarmRoutes.js'
 import path from 'path'
 import doseLogRoutes from "./routes/doseLogRoutes.js";
