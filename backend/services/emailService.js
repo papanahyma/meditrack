@@ -1,6 +1,6 @@
-import axios from 'axios'
+const axios = require('axios')
 
-export const sendEmail = async ({ to, subject, text, html }) => {
+const sendEmail = async ({ to, subject, text, html }) => {
   try {
     if (!process.env.N8N_EMAIL_WEBHOOK_URL) {
       console.error('❌ N8N_EMAIL_WEBHOOK_URL missing in Render env')
@@ -12,7 +12,6 @@ export const sendEmail = async ({ to, subject, text, html }) => {
       subject,
       text: text || '',
       html: html || text || ''
-      // Remove 'from' - n8n Gmail node sets this
     }
 
     await axios.post(process.env.N8N_EMAIL_WEBHOOK_URL, payload, { 
@@ -27,4 +26,4 @@ export const sendEmail = async ({ to, subject, text, html }) => {
   }
 }
 
-export default sendEmail
+module.exports = sendEmail
